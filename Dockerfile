@@ -10,4 +10,6 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "comments_project.wsgi:application", "--bind", "0.0.0.0:8000"]
+RUN python manage.py collectstatic --noinput
+
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "comments_project.asgi:application"]

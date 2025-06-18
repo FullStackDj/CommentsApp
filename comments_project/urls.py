@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('comments.urls')),
+    path('api/', include('comments.urls')),
+    path('captcha/', include('captcha.urls')),
 ]
 
 if settings.DEBUG:

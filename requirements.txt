@@ -1,0 +1,8 @@
+Django>=4.2
+djangorestframework
+gunicorn
+psycopg2-binary
+redis
+celery
+channels
+bleach~=6.2.0

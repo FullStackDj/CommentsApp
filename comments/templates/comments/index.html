@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Comments</title>
+    <link href="{% static 'comments/css/lightbox.min.css' %}" rel="stylesheet" />
+</head>
+<body>
+
+    <div id="app"></div>
+
+    {% verbatim %}
+    <script type="text/x-template" id="comment-template">
+        <div>
+            <div v-if="errors.length" class="errors" style="color: red; margin-bottom: 10px;">
+                <ul>
+                    <li v-for="error in errors" :key="error">{{ error }}</li>
+                </ul>
+            </div>
+
+            <form @submit.prevent="handleSubmit">
+                <div style="margin-bottom: 8px;">
+                    <button type="button" @click.prevent="insertTag('[i]', '[/i]')">[i]</button>
+                    <button type="button" @click.prevent="insertTag('[strong]', '[/strong]')">[strong]</button>
+                    <button type="button" @click.prevent="insertTag('[code]', '[/code]')">[code]</button>
+                    <button type="button" @click.prevent="insertTag('[a]', '[/a]')">[a]</button>
+                </div>
+
+                <input v-model="form.name" placeholder="Name" required />
+                <input v-model="form.email" placeholder="Email" type="email" required />
+                <input v-model="form.homepage" placeholder="Home page" />
+
+                <div class="captcha-container" style="margin-bottom:10px;">
+                    <img
+                        :src="captchaUrl"
+                        alt="CAPTCHA"
+                        @click="refreshCaptcha"
+                        style="cursor:pointer; border: 1px solid #ccc; margin-right: 8px;"
+                        title="Click to refresh CAPTCHA"
+                    />
+                    <button type="button" @click="refreshCaptcha">Refresh CAPTCHA</button>
+                </div>
+
+                <input v-model="form.captcha" placeholder="Enter CAPTCHA" required />
+
+                <textarea v-model="form.text" @input="handlePreview" placeholder="Comment text" required></textarea>
+                <input type="file" multiple @change="handleFileChange" />
+                <button type="submit">Submit</button>
+            </form>
+
+            <div v-html="previewHtml" class="preview"></div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th @click="toggleSortOrder('name')">Name</th>
+                        <th @click="toggleSortOrder('email')">Email</th>
+                        <th @click="toggleSortOrder('created_at')">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="comment in comments" :key="comment.id">
+                        <tr>
+                            <td>{{ comment.user.name }}</td>
+                            <td>{{ comment.user.email }}</td>
+                            <td>{{ comment.created_at }}</td>
+                        </tr>
+                        <tr v-for="file in comment.attachments" :key="file.id">
+                            <td colspan="3">
+                                <a
+                                    :href="file.file"
+                                    data-lightbox="comment-files"
+                                    :data-title="getFileName(file.file)"
+                                    target="_blank"
+                                >
+                                    {{ getFileName(file.file) }}
+                                </a>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </script>
+    {% endverbatim %}
+
+    <script src="{% static 'comments/js/vue.global.prod.js' %}"></script>
+    <script src="{% static 'comments/js/lightbox.min.js' %}"></script>
+    <script src="{% static 'comments/js/app.js' %}"></script>
+</body>
+</html>

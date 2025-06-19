@@ -5,6 +5,11 @@ from .serializers import CommentSerializer, CommentCreateSerializer
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .services import render_comment_preview
+
 
 class CommentViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
@@ -30,6 +35,13 @@ class CommentCreateAPIView(generics.CreateAPIView):
                 "message": f"New comment from {comment.user.name}: {comment.text[:50]}"
             }
         )
+
+class CommentPreviewAPIView(APIView):
+    def post(self, request):
+        text = request.data.get("text", "")
+        preview = render_comment_preview(text)
+        return Response({"preview": preview}, status=status.HTTP_200_OK)
+
 
 def comment_page(request):
     return render(request, 'comments/index.html')

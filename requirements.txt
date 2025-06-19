@@ -11,3 +11,4 @@ django-filter~=25.1
 asgiref~=3.8.1
 daphne
 channels_redis
+bbcode

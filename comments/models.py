@@ -37,6 +37,7 @@ def validate_file_extension(file):
     if ext not in allowed_extensions:
         raise ValidationError('Unsupported file type. Allowed types: .jpg, .jpeg, .png, .gif, .txt')
 
+
 def validate_file_size(file):
     max_size = 5 * 1024 * 1024
     if file.size > max_size:
